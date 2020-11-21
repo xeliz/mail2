@@ -3,7 +3,6 @@ package com.github.xeliz.mail2;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.xeliz.mail2.types.Mail2RequestBodyDTO;
 import com.github.xeliz.mail2.types.Mail2RequestDTO;
-import com.github.xeliz.mail2.types.Mail2RequestDTOAction;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +34,7 @@ class Mail2ApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(
                         new Mail2RequestDTO(
-                                Mail2RequestDTOAction.AUTH,
+                                Mail2RequestDTO.Mail2RequestDTOAction.AUTH,
                                 new Mail2RequestBodyDTO(
                                         "http://alice@localhost:8080/mail2"
                                 )

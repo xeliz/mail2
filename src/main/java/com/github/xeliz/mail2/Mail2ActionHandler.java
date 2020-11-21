@@ -34,11 +34,13 @@ public class Mail2ActionHandler {
             case AUTH:
                 return auth(request.getBody());
             default:
-                return new Mail2ResponseDTO(Mail2ResponseDTOStatus.ERROR, "Unknown action: " + request.getAction());
+                return new Mail2ResponseDTO(Mail2ResponseDTO.Mail2ResponseDTOStatus.ERROR, "Unknown action: " + request.getAction());
         }
     }
 
     private Mail2ResponseDTO send(Mail2RequestBodyDTO body) {
+        final Map<String, Mail2.Mail2Status> sendingStatues = new HashMap<>();
+
         final Map<String, List<String>> groupedTargetAddresses = new HashMap<>();
         for (final String targetAddress : body.getTo()) {
             try {
@@ -51,9 +53,7 @@ public class Mail2ActionHandler {
                         url.getPath()
                 );
 
-                if (!groupedTargetAddresses.containsKey(sid)) {
-                    groupedTargetAddresses.put(sid, new LinkedList<>());
-                }
+                groupedTargetAddresses.putIfAbsent(sid, new LinkedList<>());
 
                 groupedTargetAddresses.get(sid).add(targetAddress);
             } catch (final Exception e) {
@@ -68,6 +68,7 @@ public class Mail2ActionHandler {
                         body.getData(),
                         Mail2.Mail2Status.DELIVERED
                 ));
+                sendingStatues.putIfAbsent(sid, Mail2.Mail2Status.DELIVERED);
             } else {
                 final Mail2 mail2 = new Mail2(
                         body.getFrom(),
@@ -75,10 +76,10 @@ public class Mail2ActionHandler {
                         body.getData(),
                         Mail2.Mail2Status.PENDING
                 );
-                mail2Repository.save(mail2);
+                mail2Repository.saveAndFlush(mail2); // flush to retrieve ID
 
                 final Mail2RequestDTO requestDTO = new Mail2RequestDTO(
-                        Mail2RequestDTOAction.SEND,
+                        Mail2RequestDTO.Mail2RequestDTOAction.SEND,
                         new Mail2RequestBodyDTO(
                                 body.getToken(),
                                 body.getFrom(),
@@ -92,24 +93,29 @@ public class Mail2ActionHandler {
                         .body(BodyInserters.fromValue(requestDTO))
                         .retrieve()
                         .bodyToMono(Mail2ResponseDTO.class)
+                        // TODO: a temporary solution. A better idea is to schedule request performing with an interval N times.
+                        .onErrorReturn(new Mail2ResponseDTO(Mail2ResponseDTO.Mail2ResponseDTOStatus.ERROR, "network error"))
                         .subscribe(mail2ResponseDTO -> {
-                            if (mail2ResponseDTO.getStatus() == Mail2ResponseDTOStatus.ERROR) {
-                                // TODO: set error status
+                            if (mail2ResponseDTO.getStatus() == Mail2ResponseDTO.Mail2ResponseDTOStatus.ERROR) {
+                                mail2.setStatus(Mail2.Mail2Status.ERROR);
                             } else {
-                                // TODO: set delivered status
+                                mail2.setStatus(Mail2.Mail2Status.DELIVERED);
                             }
+                            mail2Repository.save(mail2);
                         });
+                sendingStatues.putIfAbsent(sid, Mail2.Mail2Status.PENDING);
             }
         }
         return new Mail2ResponseDTO(
-                Mail2ResponseDTOStatus.OK,
-                "sent"
+                Mail2ResponseDTO.Mail2ResponseDTOStatus.OK,
+                "sent",
+                sendingStatues
         );
     }
 
     private Mail2ResponseDTO receive(Mail2RequestBodyDTO body) {
         return new Mail2ResponseDTO(
-                Mail2ResponseDTOStatus.OK,
+                Mail2ResponseDTO.Mail2ResponseDTOStatus.OK,
                 "found mail2s",
                 mail2Repository.findAllByAddress(body.getToken())
                         .stream()
@@ -125,7 +131,7 @@ public class Mail2ActionHandler {
 
     private Mail2ResponseDTO auth(Mail2RequestBodyDTO body) {
         return new Mail2ResponseDTO(
-                Mail2ResponseDTOStatus.OK,
+                Mail2ResponseDTO.Mail2ResponseDTOStatus.OK,
                 "authorized",
                 body.getAddress()
         );
