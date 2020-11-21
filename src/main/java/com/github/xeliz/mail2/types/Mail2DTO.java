@@ -1,7 +1,7 @@
 package com.github.xeliz.mail2.types;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.github.xeliz.mail2.entities.Mail2Status;
+import com.github.xeliz.mail2.entities.Mail2;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ public class Mail2DTO {
     private String from;
     private List<String> to;
     private String data;
-    private Mail2Status mail2Status;
+    private Mail2.Mail2Status mail2Status;
 
     public Mail2DTO() {
     }
 
-    public Mail2DTO(String from, List<String> to, String data, Mail2Status mail2Status) {
+    public Mail2DTO(String from, List<String> to, String data, Mail2.Mail2Status mail2Status) {
         this.from = from;
         this.to = to;
         this.data = data;
@@ -47,11 +47,11 @@ public class Mail2DTO {
         this.data = data;
     }
 
-    public Mail2Status getMail2DTOStatus() {
+    public Mail2.Mail2Status getMail2DTOStatus() {
         return mail2Status;
     }
 
-    public void setMail2DTOStatus(Mail2Status mail2DTOStatus) {
+    public void setMail2DTOStatus(Mail2.Mail2Status mail2DTOStatus) {
         this.mail2Status = mail2DTOStatus;
     }
 }

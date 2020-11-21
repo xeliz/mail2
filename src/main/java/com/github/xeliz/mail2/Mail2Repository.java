@@ -1,28 +1,17 @@
 package com.github.xeliz.mail2;
 
 import com.github.xeliz.mail2.entities.Mail2;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.RepositoryDefinition;
+import org.springframework.data.repository.query.Param;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-/**
- * A temporary in-memory and non-efficient implementation of mail2 repository
- */
-@Repository
-public class Mail2Repository {
+@RepositoryDefinition(domainClass = Mail2.class, idClass = Long.class)
+public interface Mail2Repository {
 
-    private final List<Mail2> mail2List = new LinkedList<>();
+    void save(Mail2 mail2);
 
-    public synchronized void saveMail2(Mail2 mail2) {
-        mail2List.add(mail2);
-    }
-
-    public synchronized List<Mail2> findMailsByAddress(final String address) {
-        return mail2List
-                .stream()
-                .filter(mail2 -> mail2.getFrom().equals(address) || mail2.getTo().contains(address))
-                .collect(Collectors.toList());
-    }
+    @Query("from Mail2 m where m.from = :address or :address member of m.to")
+    List<Mail2> findAllByAddress(@Param("address") final String address);
 }

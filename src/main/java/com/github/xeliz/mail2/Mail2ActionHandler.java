@@ -1,7 +1,6 @@
 package com.github.xeliz.mail2;
 
 import com.github.xeliz.mail2.entities.Mail2;
-import com.github.xeliz.mail2.entities.Mail2Status;
 import com.github.xeliz.mail2.types.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,20 +62,20 @@ public class Mail2ActionHandler {
         }
         for (final String sid : groupedTargetAddresses.keySet()) {
             if (sid.equals(currentServerSid)) {
-                mail2Repository.saveMail2(new Mail2(
+                mail2Repository.save(new Mail2(
                         body.getFrom(),
                         body.getTo(),
                         body.getData(),
-                        Mail2Status.DELIVERED
+                        Mail2.Mail2Status.DELIVERED
                 ));
             } else {
                 final Mail2 mail2 = new Mail2(
                         body.getFrom(),
                         body.getTo(),
                         body.getData(),
-                        Mail2Status.PENDING
+                        Mail2.Mail2Status.PENDING
                 );
-                mail2Repository.saveMail2(mail2);
+                mail2Repository.save(mail2);
 
                 final Mail2RequestDTO requestDTO = new Mail2RequestDTO(
                         Mail2RequestDTOAction.SEND,
@@ -112,7 +111,7 @@ public class Mail2ActionHandler {
         return new Mail2ResponseDTO(
                 Mail2ResponseDTOStatus.OK,
                 "found mail2s",
-                mail2Repository.findMailsByAddress(body.getToken())
+                mail2Repository.findAllByAddress(body.getToken())
                         .stream()
                         .map(mail2 -> new Mail2DTO(
                                 mail2.getFrom(),
