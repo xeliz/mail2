@@ -34,7 +34,8 @@ public class Mail2RequestDTO {
     public enum Mail2RequestDTOAction {
         SEND("send"),
         RECEIVE("receive"),
-        AUTH("auth");
+        AUTH("auth"),
+        VALIDATE_TOKEN("validate_token");
 
         private final String actionType;
 

@@ -1,5 +1,6 @@
 package com.github.xeliz.mail2;
 
+import com.github.xeliz.mail2.services.Mail2ActionHandler;
 import com.github.xeliz.mail2.types.Mail2RequestDTO;
 import com.github.xeliz.mail2.types.Mail2ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,6 @@ public class Mail2Application {
 
 	@PostMapping("${mail2.endpoint.path:/mail2}")
 	public Mail2ResponseDTO mailEndpoint(@RequestBody Mail2RequestDTO mail2RequestDTO) {
-		// TODO: add validation support: https://habr.com/ru/post/424819/
-
 		return mail2ActionHandler.dispatch(mail2RequestDTO);
 	}
 

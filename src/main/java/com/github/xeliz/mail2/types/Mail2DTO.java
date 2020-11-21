@@ -11,16 +11,14 @@ public class Mail2DTO {
     private String from;
     private List<String> to;
     private String data;
-    private Mail2.Mail2Status mail2Status;
 
     public Mail2DTO() {
     }
 
-    public Mail2DTO(String from, List<String> to, String data, Mail2.Mail2Status mail2Status) {
+    public Mail2DTO(String from, List<String> to, String data) {
         this.from = from;
         this.to = to;
         this.data = data;
-        this.mail2Status = mail2Status;
     }
 
     public String getFrom() {
@@ -45,13 +43,5 @@ public class Mail2DTO {
 
     public void setData(String data) {
         this.data = data;
-    }
-
-    public Mail2.Mail2Status getMail2DTOStatus() {
-        return mail2Status;
-    }
-
-    public void setMail2DTOStatus(Mail2.Mail2Status mail2DTOStatus) {
-        this.mail2Status = mail2DTOStatus;
     }
 }

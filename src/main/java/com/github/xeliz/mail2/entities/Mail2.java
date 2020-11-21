@@ -26,18 +26,13 @@ public class Mail2 {
     @Column(name = "DATA")
     private String data;
 
-    @Column(name = "STATUS")
-    @Enumerated(EnumType.STRING)
-    private Mail2Status status;
-
     public Mail2() {
     }
 
-    public Mail2(String from, List<String> to, String data, Mail2Status status) {
+    public Mail2(String from, List<String> to, String data) {
         this.from = from;
         this.to = to;
         this.data = data;
-        this.status = status;
     }
 
     public Long getId() {
@@ -68,20 +63,12 @@ public class Mail2 {
         this.data = data;
     }
 
-    public Mail2Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Mail2Status status) {
-        this.status = status;
-    }
-
     public enum Mail2Status {
         PENDING("pending"),
         DELIVERED("delivered"),
         ERROR("error");
 
-        private String status;
+        private final String status;
 
         Mail2Status(final String status) {
             this.status = status;

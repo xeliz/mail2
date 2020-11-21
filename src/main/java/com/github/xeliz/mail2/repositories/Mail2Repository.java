@@ -1,4 +1,4 @@
-package com.github.xeliz.mail2;
+package com.github.xeliz.mail2.repositories;
 
 import com.github.xeliz.mail2.entities.Mail2;
 import org.springframework.data.jpa.repository.JpaRepository;

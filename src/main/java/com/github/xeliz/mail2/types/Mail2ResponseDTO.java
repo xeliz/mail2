@@ -17,7 +17,6 @@ public class Mail2ResponseDTO {
     // optional
     private String token;
     private List<Mail2DTO> mails;
-    private Map<String, Mail2.Mail2Status> sendingStatues;
 
     public Mail2ResponseDTO() {
     }
@@ -37,12 +36,6 @@ public class Mail2ResponseDTO {
         this.status = status;
         this.message = message;
         this.mails = mails;
-    }
-
-    public Mail2ResponseDTO(Mail2ResponseDTOStatus status, String message, Map<String, Mail2.Mail2Status> sendingStatues) {
-        this.status = status;
-        this.message = message;
-        this.sendingStatues = sendingStatues;
     }
 
     public Mail2ResponseDTOStatus getStatus() {
@@ -75,14 +68,6 @@ public class Mail2ResponseDTO {
 
     public void setMails(List<Mail2DTO> mails) {
         this.mails = mails;
-    }
-
-    public Map<String, Mail2.Mail2Status> getSendingStatues() {
-        return sendingStatues;
-    }
-
-    public void setSendingStatues(Map<String, Mail2.Mail2Status> sendingStatues) {
-        this.sendingStatues = sendingStatues;
     }
 
     public enum Mail2ResponseDTOStatus {
